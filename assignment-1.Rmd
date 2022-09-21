@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1 - The tidyverse"
-author: "FILL IN YOUR FULL NAME"
+author: "Alvaro Guijarro"
 date: "`r format(Sys.time(), '%B %d, %Y | %H:%M:%S | %Z')`"
 output:
   html_document:
@@ -31,6 +31,10 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r, include = T}
 # LOAD THE PACKAGES YOU ARE USING IN THIS CODE CHUNK library(nameofpackage)
+library(legislatoR)
+library(tibble)
+library(dplyr)
+library(magrittr)
 ```
 
 <br>
@@ -66,13 +70,22 @@ The following tasks will be based on data from the `core` and `political` tables
 a) What's the overall share of male legislators in the entire dataset? [1 point]
 
 ```{r}
-# YOUR CODE HERE
+# get "Core" table for the Austrian Nationalrat ------------------------------------------
+aut_core <- get_core(legislature = "aut")
+glimpse(aut_core)
+aut_core %>% count(sex)
+male_legislators <- aut_core %>% filter(sex == "male") %>% count()
+total_legislators <- count(aut_core)
+answer1 <- (male_legislators / total_legislators)*100
+paste("The overall share of male legislators is ", answer1, "%")
 ```
 
 b) How many (both in absolute and relative terms) legislators died in the same place they were born in? [1 point]
 
 ```{r}
 # YOUR CODE HERE
+geo_legislators <- select(aut_core,country,birthplace,deathplace)
+mutate(geo_legislators,birthplace == deathplace)
 ```
 
 c) Create a new variable `age_at_death` that reports the age at which legislators died. Then, plot the distribution of that variable for the entire dataset. [2 points]
